@@ -4,11 +4,13 @@ PackTex: Packaging LaTeX papers for journal and ArXiV
 
 These are my scripts for preparing an archive that can be uploaded to journals and/or ArXiV.
 
-Features:
+Features
+--------
 
 * collect files scattered across the file system into one folder
 * condense all latex files into one file (required by some journals), remove potentially embarrassing latex comments
 * condense bibtex bibliography to only used entries, remove comments and abstracts
+* update bibtex bibliography entries with ADS
 
 Install::
 
@@ -55,44 +57,47 @@ Finally, you can create a tarball, excluding some log files (you may also want t
 Update bibtex to latest version
 -------------------------------
 
-To update your bibtex library with ADS, you can use the following steps:
+Arxived papers get published, and the journals want us to use the latest publication information.
 
-First, reset bibm.
+To update your bibtex library with ADS, we can take advantage of bibmanager as described at https://bibmanager.readthedocs.io/en/latest/):
+
+First, reset bibm and make it forget everything.
 
     bibm reset
     bibm config ads_token $(cat ~/.ads/dev_key)
 
-Next, we make a copy of the bibliography we want to edit::
+Next, we make a copy of the bibliography we want to update::
 
     cp /my/literature/directory/agn.bib /tmp/orig.bib
 
-Optionally, convert to UTF-8 first, if it is in ISO-8859-1::
+Optionally, if it is in ISO-8859-1, convert to UTF-8 first::
 
     iconv -f ISO-8859-1 -t UTF-8 </my/literature/directory/agn.bib > /tmp/orig.bib
 
-Next, import into bibm (this forgets many fields, and the order of entries)::
+Import into bibm. This forgets many fields, and the order of entries::
 
     bibm merge /tmp/orig.bib
 
-Update from ADS (described at https://bibmanager.readthedocs.io/en/latest/ads.html)::
+Update from ADS, without changing the key names::
 
     bibm ads-update no
 
-Export again::
+Export again to bibtex::
 
     bibm export /tmp/updated.bib
 
-Merge only the important fields back into the original file, keeping all original fields and the original order::
+Merge only the important publication fields back into the original file, keeping all original fields and the original order::
 
-    python3 ~/Downloads/packtex/bibupdatemerge.py /tmp/orig.bib /tmp/updated.bib /tmp/merged.bib
+    python3 /path/to/this/repo/bibupdatemerge.py /tmp/orig.bib /tmp/updated.bib /tmp/merged.bib
 
-You can look at the changes::
+You can look at the changes made::
 
-    meld /tmp/orig.bib /tmp/merged.bib
+    diff -u /tmp/orig.bib /tmp/merged.bib
 
-Then copy it back overwriting the original file
+Finally, copy it back, overwriting the original file
 
     cp /tmp/merged.bib /my/literature/directory/agn.bib
+    
     # or: 
     iconv -f ISO-8859-1 -t UTF-8 < /tmp/merged.bib > /my/literature/directory/agn.bib
 
