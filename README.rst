@@ -100,7 +100,7 @@ You can look at the changes made::
 
     diff -u /tmp/orig.bib /tmp/merged.bib
 
-Finally, copy it back, overwriting the original file
+Finally, copy it back, overwriting the original file::
 
     cp /tmp/merged.bib /my/literature/directory/agn.bib
     

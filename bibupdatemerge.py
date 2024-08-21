@@ -1,16 +1,35 @@
+#!/usr/bin/env python3
 """
-bibm reset
-bibm config ads_token $(cat ~/.ads/dev_key)
-cp /mnt/data/daten/PostDoc/literature/agn.bib /tmp/orig.bib
-iconv -f ISO-8859-1 -t UTF-8 /tmp/orig.bib > /tmp/orig-utf8.bib
-bibm merge /tmp/orig-utf8.bib
-bibm export /tmp/reordered-utf8.bib
-bibm ads-update no
-bibm export /tmp/new-utf8.bib
-python3 ~/Downloads/packtex/bibupdatemerge.py /tmp/orig-utf8.bib /tmp/new-utf8.bib /tmp/merged-utf8.bib
-meld /tmp/orig-utf8.bib /tmp/merged-utf8.bib
-iconv -f ISO-8859-1 -t UTF-8 /tmp/orig.bib > /tmp/orig-utf8.bib
-### copy /tmp/merged-utf8.bib /mnt/data/daten/PostDoc/literature/ 
+Merges updated bibtex entries from another file.
+
+See README for usage instructions.
+
+Copyright (c) 2024, Johannes Buchner
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its
+   contributors may be used to endorse or promote products derived from
+   this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
 import sys
@@ -43,42 +62,3 @@ bibtex_format.indent = '  '
 bibtex_format.block_separator = '\n\n'
 bibtexparser.write_file(sys.argv[3], results, bibtex_format=bibtex_format)
 
-"""
-# for each bib key, record changes
-chunks = []
-current_key = None
-current_chunk = []
-with open(bib_orig, encoding='ISO-8859-1') as fbib:
-	for line in fbib:
-		if line.startswith('@'):
-			chunks.append((current_key, current_chunk))
-			del current_key, current_chunk
-			current_chunk = []
-			current_key = line.split('{')[1].split(',')[0]
-			print(current_key)
-		current_chunk.append(line)
-	chunks.append((current_key, current_chunk))
-del fbib, current_key, current_chunk, line
-
-for current_key, current_chunk in chunks:
-	if current_key is not None and current_key in library:
-		library_entry = library[current_key]
-		newchunk = []
-		# copy keys_to_copy, ignoring the original entry
-		# but only the ones we have in the update
-		# otherwise, keep as is
-		keys_to_copy_here = [k for k in keys_to_copy if k in library_entry]
-		for line in current_chunk:
-			if ' = ' in line:
-				key, oldvalue = line.strip().split(' = ', 1)
-				if key in keys_to_copy_here and not (key == 'author' and ' and et al.' in library_entry[key]):
-					continue
-			newchunk.append(line)
-
-		# inject the new entry before the last entry, so that we do not need to worry about the comma
-		end_of_entries_position = newchunk.index("}\n")
-		for key in keys_to_copy_here:
-			newchunk.insert(end_of_entries_position - 1, "  %s = %s,\n" % (key, library_entry[key]))
-		print("BEFORE:", current_key, "".join(current_chunk))
-		print("NOW:", current_key, "".join(newchunk))
-"""
