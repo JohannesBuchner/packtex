@@ -12,9 +12,15 @@ Features
 * condense bibtex bibliography to only used entries, remove comments and abstracts
 * update bibtex bibliography entries with ADS
 
-Install::
+Install
+-------
+
+Some prerequisities for the optional steps:
 
     $ pip install bibmanager bibtexparser
+
+And you need to download a copy of this repository. The instructions below
+assume you stored it into /path/to/this/repo/.
 
 Step 1: Self-contained directory
 ---------------------------------
