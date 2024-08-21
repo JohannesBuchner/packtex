@@ -107,3 +107,6 @@ Finally, copy it back, overwriting the original file::
     # or: 
     iconv -f ISO-8859-1 -t UTF-8 < /tmp/merged.bib > /my/literature/directory/agn.bib
 
+License
+-------
+BSD
